@@ -1376,3 +1376,25 @@ return executeBound(func, bound, context, this, args.concat(slice.call(arguments
 
 --- 
 
+```
+  _.partial = function(func) {
+    var boundArgs = slice.call(arguments, 1);
+    var bound = function() {
+      var position = 0, length = boundArgs.length;
+      var args = Array(length);
+      for (var i = 0; i < length; i++) {
+        args[i] = boundArgs[i] === _ ? arguments[position++] : boundArgs[i];
+      }
+      while (position < arguments.length) args.push(arguments[position++]);
+      return executeBound(func, bound, this, this, args);
+    };
+    return bound;
+  };
+```
+
+函数式编程中的partial application，概念就是绑定一个函数的部分参数。
+
+首先接受的参数就是要部分绑定的函数func，然后取出需要绑定的参数：
+var boundArgs = slice.call(arguments, 1);
+
+然后创建一个绑定函数bound，注意该绑定函数已有部分参数绑定了。这里有一个_变量，是特别用来指定不绑定的参数的。于是第一个for循环就先按绑定函数的参数取出需要绑定的参数。后面的while用来取未绑定的参数。最后将所有参数和函数func一起执行。
