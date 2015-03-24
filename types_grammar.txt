@@ -1,0 +1,20 @@
+Statement & expression
+
+the English language
+- sentence: complete formation of words that expresses a thought
+- phrase: components of sentence
+
+JavaScript
+- statement <-> sentence
+- expression <-> phrase
+
+Warning:
+This is a chained assignments:
+  var a, b, c;
+  a = b = c = 42;
+But if a, b, c are not declare, the assignment will throw error or create global
+values:
+  var a = b = 42;   // b is global
+
+JSON is a subset of JS syntax, but JSON is not valid JS grammar.
+

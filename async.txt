@@ -1,0 +1,9 @@
+Intro
+- later doesn't happen strictly & immdediately after now
+- waiting from now until later is to use callback
+
+Event loop
+- handle executing multiple chunks of your program over time
+- JS engine has no sense of time, it's the surrounding environment that scheduled "events"
+
+

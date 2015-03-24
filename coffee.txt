@@ -1,0 +1,38 @@
+Stirng
+- search: find another string within
+- replace: replace one substring
+- split: split a string into an array of strings
+- interpolation: "Affirmative, #{userName}. I read you."
+
+Array
+- ranges
+  - two or three dots between two numbers
+  - two dots including upper bound [1..5] #[1, 2, 3, 4, 5] [1...5] #[1, 2, 3, 4]
+  - slicing part of array ['good', 'bad', ugly'][0..1] #['good', 'bad']
+- comprehensions
+  - for in: array
+  - when
+    - works like a guard
+  - by
+    - in jumps: sleep hour for hour in day by 6:
+
+Heres
+Can contain whiespace!
+- herecomments: ###
+- heredocs:
+  - '''
+  - """ for interploation
+- heregexes: ///
+
+Functions
+- functions are values (first class)
+- the last expression is the evaluation of the function
+
+unless
+- if not <-> unless
+- if the expression after unless is falsy, then execute
+- if is truthy, won't execute
+- the oppsite of if
+
+
+

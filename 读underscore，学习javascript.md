@@ -1398,3 +1398,51 @@ return executeBound(func, bound, context, this, args.concat(slice.call(arguments
 var boundArgs = slice.call(arguments, 1);
 
 然后创建一个绑定函数bound，注意该绑定函数已有部分参数绑定了。这里有一个_变量，是特别用来指定不绑定的参数的。于是第一个for循环就先按绑定函数的参数取出需要绑定的参数。后面的while用来取未绑定的参数。最后将所有参数和函数func一起执行。
+
+---
+
+```
+_.bindAll = function(obj) {
+    var i, length = arguments.length, key;
+    if (length <= 1) throw new Error('bindAll must be passed function names');
+    for (i = 1; i < length; i++) {
+      key = arguments[i];
+      obj[key] = _.bind(obj[key], obj);
+    }
+    return obj;
+  };
+```
+
+可以将多个方法绑定在对象上。还是比较简单的，依次遍历要绑定的方法，然后依次调用bind就行了。
+
+
+---
+
+```
+ _.memoize = function(func, hasher) {
+    var memoize = function(key) {
+      var cache = memoize.cache;
+      var address = '' + (hasher ? hasher.apply(this, arguments) : key);
+      if (!_.has(cache, address)) cache[address] = func.apply(this, arguments);
+      return cache[address];
+    };
+    memoize.cache = {};
+    return memoize;
+  };
+```
+
+前面好像介绍过来，就是缓存函数调用的结果。hasher是一个可选的用于标示函数的标志。内部还是挺简单的，就是设置一个cache对象用作缓存，然后按key或是hash来检查cache中是否已经有该函数，有德话就知道返回结果，没有的话就调用该函数，然后缓存结果。
+
+
+--- 
+
+```
+ _.delay = function(func, wait) {
+    var args = slice.call(arguments, 2);
+    return setTimeout(function(){
+      return func.apply(null, args);
+    }, wait);
+  };
+```
+
+从名字上很容易看出了，就是将函数延迟指定时间再调用。内部也很简单，本质上还是setTimeOut而已。

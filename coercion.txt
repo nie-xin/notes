@@ -1,0 +1,72 @@
+toString: 
+- null -> "null"
+- undefined -> "undefined"
+- true -> "true"
+- numbers
+  - small nbs converted directly
+  - large nbs converted to exponetial form
+- objects
+  - Object.prototype.toString()
+  - internal [[Class]]
+- array -> toString()
+
+JSON serialization
+- JSON.stringify()
+- result is always a string
+- omit undefined, function & symbol:
+  - in array: replace by null
+  - in object: excluded
+- objects
+  - using toJSON if defined
+  - define toJSON if object has illegal values
+  - toJSON should return actual regular value (to a JSON-safe value suui)
+- JSON.stringify's second argument
+  - replacer (array or function)
+  - providing a filter mechanism on properties should included
+    - array: array of string that specify property to be included
+    - function: to be called for object and each property
+    var a = {
+      b: 43,
+      c: "42",
+      d: [1, 2, 3]
+    };
+
+    JSON.stringify(a, ["b", "c"]);
+    JSON.stringify(a, function(key, val) {
+      if (key !== "c") return val;
+    });
+- third argument: space
+  - indentation 
+  - positive integer: how many space for indentation
+  - sting: first ten characters to be used for identation
+
+ToNumber
+- true -> 1, false -> 0
+- undefined -> NaN
+- null -> 0
+- array: if can't be convert to number, return NaN
+- objects: to their promitive value -> toNumber
+
+ToBoolean
+- falsy values:
+  - values will become false
+  - undefined, null, false, °0, -0, NaN, ""
+- turthy values:
+  - everything else become true
+- falsy object: an object looks and acts like a normal object, but coerced to false
+
+
+Explict coercion
+- stirng - number:
+    - String() & Number()
+    - no new keyword in front, so not creating object wrapper
+    - other ways doing so:
+        - var b = a.toStrong();
+        - var d = +d;
+
+
+Implicity
+String & Number
+- + : if either operand is string, the operation will be concatenation
+- else will be a numeric addition
+
