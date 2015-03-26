@@ -225,7 +225,7 @@ _.reduce = _.foldl = _.inject = function(obj, iteratee, memo, context) {
 和原生reduce功能类似，将数组逐步推导为一个最终结果。结合文档来看：
 
 ```
-_.reduce(list, iteratee, [memo], [context]) 
+_.reduce(list, iteratee, [memo], [context])
 ```
 
 于是源代码中得这一句就清楚了：
@@ -315,7 +315,7 @@ index++可是先引用后增值哦。继续看下去：
 
 逐个检查obj中的对象，返回第一个符合predicate为true的对象。在some的迭代中，如果predicate返回true，就直接return退出迭代，保证只返回第一个符合的对象。
 
---- 
+---
 
 ```
 _.filter = _.select = function(obj, predicate, context) {
@@ -351,7 +351,7 @@ _.negate = function(predicate) {
 
 就是对predicate的结果取反。
 
---- 
+---
 
 ```
 _.every = _.all = function(obj, predicate, context) {
@@ -377,7 +377,7 @@ if (!predicate(obj[currentKey], currentKey, obj))
 
 迭代中只要有一个不符合predicate的成员就立即返回false。
 
---- 
+---
 
 ```
  _.some = _.any = function(obj, predicate, context) {
@@ -465,7 +465,7 @@ _.sortedIndex = function(array, obj, iteratee, context) {
 
 相当于除2了，于是就得到了二分法的中间位。这里用位移而不直接用除法，是从效率上考虑。位移的速度要比除法速度快很多，是一种高效的求中间位下标的方法。这里复习一下，左移等同于乘2，右移等同于除2。
 
---- 
+---
 
 ```
  _.invoke = function(obj, method) {
@@ -489,7 +489,7 @@ _.sortedIndex = function(array, obj, iteratee, context) {
 
 一个类似map的对对象数组使用的函数，可提取数组中对象的某个特定属性。从本质上看还是一个条件为制定key的map函数。
 
---- 
+---
 
 ```
   _.where = function(obj, attrs) {
@@ -579,7 +579,7 @@ _.findWhere = function(obj, attrs) {
 
 返回列表中最大值，可以用于数组，也可用于对象数组(可能需要用iteratee方程判断大小)。第一个if判断是否有iteratee函数，若没有则按数组处理（对象用values抽出值数组），然后就是常规的依次遍历找最大值了。如果有iteratee，则需要依次调用该函数计算当前对象的值，然后和上一次计算值比较，以找出最大值。[Infinity](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity)是JS内置的一个表示极限的值。
 
---- 
+---
 
 ```
  _.extend = function(obj) {
@@ -600,7 +600,7 @@ _.findWhere = function(obj, attrs) {
 今天跳一下顺序，先来看extend这个函数。extend是一个很常用的函数，在JQuery中也有，功能是合并多个对象，类似数组中得concat函数。在该函数定义中我们只看到一个obj对象，就是目标对象，其他对象的属性将被归并到这个对象中。
 关键功能是下面的一个双重for，遍历各个对象和其所有属性。有一点需要注意的地方， obj[prop] = source[prop];表示不加判断地将source的属性复制到obj中，如果值钱obj已经有同名属性，该属性会被后来的属性覆盖。既last in always win。
 
---- 
+---
 
 接着max继续看下去吧：
 
@@ -632,7 +632,7 @@ _.findWhere = function(obj, attrs) {
 
 和max基本类似，如果有迭代函数iteratee，则使用该迭代函数判断大小。否则就按标准算法依次找最小值。
 
---- 
+---
 
 ```
   _.shuffle = function(obj) {
@@ -696,7 +696,7 @@ _.sample = function(obj, n, guard) {
 
 从集合中随机抽样，可指定样本数量n。第一个if语言确定没有指定样本数量，于是只随机抽一个样（使用random函数随机选取一个集合内元素）。guard是一个内部参数，稍后遇到的时候再详解。若有样本数量，则用shuffle做一次随机排列，然后取开头的n个元素即可。
 
---- 
+---
 
 ```
  _.sortBy = function(obj, iteratee, context) {
@@ -721,7 +721,7 @@ _.sample = function(obj, n, guard) {
 
 这个sortBy和带排序函数的原生sort作用一致，都是根据提供的排序函数对序列进行排序。先用map将序列组合成形式为{value, index, criteria}对象的集合，注意这里的criteria是调用排序函数的结果，用于稍后的排序。对这样的序列调用标准sort，通过比较criteria进行排序。对象集合排序完成后，用pluck抽取出value组成排序序列。
 
---- 
+---
 
 ```
 var group = function(behavior) {
@@ -780,7 +780,7 @@ _.indexBy(stooges, 'age');
 
 上列是return的情况，于是迭代函数就是一个访问对象属性的函数。结合上面的代码，分类也就很好理解了。
 
---- 
+---
 
 ```
 _.countBy = group(function(result, value, key) {
@@ -807,7 +807,7 @@ _.sortedIndex = function(array, obj, iteratee, context) {
 
 找出元素在集合中的排序位置。这里还是可以利用iteratee作为排序函数，求出代表值value。然后就是标准的二分排序了，>>>的作用我们前面讲过，就是快速求中间数，速度比直接除要快。
 
---- 
+---
 
 ```
 _.toArray = function(obj) {
@@ -820,7 +820,7 @@ _.toArray = function(obj) {
 
 将任何可遍历的对象转化为数组。这个函数在JS中挺有用的，比如arguments这样的特殊数组，就可以用这个函数转换。基本思想还是根据参数的类型做相应的处理，是数组就调用slice做安全转换。如果是对象数组，则返回对象identity（一般就是对象本身）的数组。最后如果是对象，就返回属性值得数组。
 
---- 
+---
 
 ```
  _.size = function(obj) {
@@ -831,7 +831,7 @@ _.toArray = function(obj) {
 
 返回对象中成员的数量。如果是集合类对象，比如数组，就返回其长度。如果是一般对象，就返回其键值的数量。
 
---- 
+---
 
 ```
 _.partition = function(obj, predicate, context) {
@@ -860,7 +860,7 @@ Array相关函数
 
 返回数组中头n个元素，若不指定n，如第二个if的情况if (n == null || guard) return array[0];就返回第一个元素。返回头n个元素可以用原生的slice来实现。
 
---- 
+---
 
 ```
 _.initial = function(array, n, guard) {
@@ -876,7 +876,7 @@ _.initial = function(array, n, guard) {
 
 这里需要排除负数，所以max的下限为0；上限是array.length - n，也就排除了最后的n个元素。若没有设置n，则array.length - 1。
 
---- 
+---
 
 ```
  _.last = function(array, n, guard) {
@@ -886,9 +886,9 @@ _.initial = function(array, n, guard) {
   };
 ```
 
-和first功能相反，返回最后n个元素。不指定n则返回最后一个元素。结构和前面的initial有点类似，用slice分割数组，这里传给slice的只有一个开始下标（下标为length - n），于是slice默认切割到数组末尾。 
+和first功能相反，返回最后n个元素。不指定n则返回最后一个元素。结构和前面的initial有点类似，用slice分割数组，这里传给slice的只有一个开始下标（下标为length - n），于是slice默认切割到数组末尾。
 
---- 
+---
 
 ```
 _.rest = _.tail = _.drop = function(array, n, guard) {
@@ -945,7 +945,7 @@ _.compact = function(array) {
   };
 ```
 
---- 
+---
 
 ```
 _.without = function(array) {
@@ -968,7 +968,7 @@ _.without = function(array) {
 
 without实际上只是调用了difference，利用difference去掉了slice.call(arguments, 1)，也就是除第一个参数外的其他参数。
 
---- 
+---
 
 ```
   _.uniq = _.unique = function(array, isSorted, iteratee, context) {
@@ -1024,7 +1024,7 @@ if (isSorted) {
 
 返回集合的并集。在内部先用flatten将参数归并为一个数组，再利用uniq过滤掉其中重复的部分，于是便得到并集了。
 
---- 
+---
 
 ```
  _.intersection = function(array) {
@@ -1082,7 +1082,7 @@ _.pluck = function(obj, key) {
 
 内部其实就是一个map，取出key表示的obj属性。于是_.pluck(arguments, i);就是取出各个参数中下标i代表的元素了。
 
---- 
+---
 
 ```
  _.unzip = function(array) {
@@ -1095,10 +1095,10 @@ _.pluck = function(obj, key) {
     return result;
   };
 ```
-  
+
 和zip正相反，将各数组按下标归并。即各数组的第一个元素归并为一个数组，第二个元素归并为第二个数组，等等。先按各参数数组的最大长度确立结果数组的长度，然后依次遍历参数数组，将各下标元素存入对应的结果数组中。经过上面的几个函数分析，这个函数也挺容易理解的。
 
---- 
+---
 
 ```
  _.object = function(list, values) {
@@ -1118,7 +1118,7 @@ _.pluck = function(obj, key) {
 
 这里依然是一个遍历。但因为传入的参数可以不同，在每次遍历有一个if判断是否有第二个value数组。如果有，则list是key数组，将result的key值设置为对应下标的value。如果没有values，则是key/value对，于是list[i][0]是key，而list[i][1]是value。
 
---- 
+---
 
 ```
  _.indexOf = function(array, item, isSorted) {
@@ -1153,7 +1153,7 @@ trictEqual(_.indexOf([1, 2, NaN, NaN], NaN), 2, 'Expected [1, 2, NaN] to contain
 ```
 
 我们知道，JS诡异的地方在于NaN !== NaN居然是是true。于是这里先检测NaN的情况，然后按isNaN的情况查找。
- 
+
 
 如果第三个参数是数字，则表示需要从该数字下标找起。于是return _.findIndex(slice.call(array, i), _.isNaN);将数组从i下标分割后查找。
 
@@ -1243,7 +1243,7 @@ var optimizeCb = function(func, context, argCount) {
 
 于是findIndex和findLastIndex都搞清楚了。
 
---- 
+---
 
 ```
 _.sortedIndex = function(array, obj, iteratee, context) {
@@ -1262,7 +1262,7 @@ _.sortedIndex = function(array, obj, iteratee, context) {
 
 下面就是标准的二分查找了，这里不再详述。
 
---- 
+---
 
 下面是array系列的最后一个函数了：
 
@@ -1334,7 +1334,7 @@ var
 
 先将这个函数的prototye连接到参数上，在利用Ctor做constructor建立有连接关系的对象。这里需要连接new的原理，还是建议读读You don't know JS系列。简单说一下，new创建的对象的prototype，会连接到Ctor的prototype上。
 
---- 
+---
 
 ```
  _.bind = function(func, context) {
@@ -1374,7 +1374,7 @@ return executeBound(func, bound, context, this, args.concat(slice.call(arguments
 如果不是，则创建一个继承func的对象self。用self作为绑定对象调用sourceFunc。
 
 
---- 
+---
 
 ```
   _.partial = function(func) {
@@ -1434,7 +1434,7 @@ _.bindAll = function(obj) {
 前面好像介绍过来，就是缓存函数调用的结果。hasher是一个可选的用于标示函数的标志。内部还是挺简单的，就是设置一个cache对象用作缓存，然后按key或是hash来检查cache中是否已经有该函数，有德话就知道返回结果，没有的话就调用该函数，然后缓存结果。
 
 
---- 
+---
 
 ```
  _.delay = function(func, wait) {
@@ -1446,3 +1446,89 @@ _.bindAll = function(obj) {
 ```
 
 从名字上很容易看出了，就是将函数延迟指定时间再调用。内部也很简单，本质上还是setTimeOut而已。
+
+---
+
+```
+_.throttle = function(func, wait, options) {
+    var context, args, result;
+    var timeout = null;
+    var previous = 0;
+    if (!options) options = {};
+    var later = function() {
+      previous = options.leading === false ? 0 : _.now();
+      timeout = null;
+      result = func.apply(context, args);
+      if (!timeout) context = args = null;
+    };
+    return function() {
+      var now = _.now();
+      if (!previous && options.leading === false) previous = now;
+      var remaining = wait - (now - previous);
+      context = this;
+      args = arguments;
+      if (remaining <= 0 || remaining > wait) {
+        if (timeout) {
+          clearTimeout(timeout);
+          timeout = null;
+        }
+        previous = now;
+        result = func.apply(context, args);
+        if (!timeout) context = args = null;
+      } else if (!timeout && options.trailing !== false) {
+        timeout = setTimeout(later, remaining);
+      }
+      return result;
+    };
+  };
+```
+
+设置一个节流阀，用来限制func的调用次数。保证在wait时间内至多执行一次func。可传递一个option来取消第一次的立即调用。
+
+这里的later是稍后要执行的函数，如果不需要立即执行（options.leading === false），则将上次调用时间设置为0，防止立即调用func。
+
+后面是返回的函数。计算remaining剩余的等待时间如果剩余时间为零，或是剩余时间超出了wait的规定时间，则可以调用func。否则继续用setTimeOut
+延迟func直到剩余时间完结。
+
+---
+
+```
+_.debounce = function(func, wait, immediate) {
+   var timeout, args, context, timestamp, result;
+
+   var later = function() {
+     var last = _.now() - timestamp;
+
+     if (last < wait && last >= 0) {
+       timeout = setTimeout(later, wait - last);
+     } else {
+       timeout = null;
+       if (!immediate) {
+         result = func.apply(context, args);
+         if (!timeout) context = args = null;
+       }
+     }
+   };
+
+   return function() {
+     context = this;
+     args = arguments;
+     timestamp = _.now();
+     var callNow = immediate && !timeout;
+     if (!timeout) timeout = setTimeout(later, wait);
+     if (callNow) {
+       result = func.apply(context, args);
+       context = args = null;
+     }
+
+     return result;
+   };
+ };
+ ```
+
+ 这个很容易和节流阀弄混，debounce的作用是当func没有被调用wait时间后，调用func。看起来有点奇怪，其实在防止重复点击等方面
+ 很有用。
+
+ later还是稍后调用的函数。先计算上一次调用的时间，如果该时间没有超过wait就再延缓执行函数。否则就可以执行func了。
+
+ 在return的函数中，首先看是否需要立即执行一次函数（是否有immediate参数），有的话就立即调用一次func。然后设置调用later函数。
