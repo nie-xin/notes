@@ -1525,10 +1525,91 @@ _.debounce = function(func, wait, immediate) {
    };
  };
  ```
+这个很容易和节流阀弄混，debounce的作用是当func没有被调用wait时间后，调func。看起来有点奇怪，其实在防止重复点击等方面很有用。
 
- 这个很容易和节流阀弄混，debounce的作用是当func没有被调用wait时间后，调用func。看起来有点奇怪，其实在防止重复点击等方面
- 很有用。
+later还是稍后调用的函数。先计算上一次调用的时间，如果该时间没有超过wait就再延缓执行函数。否则就可以执行func了。
 
- later还是稍后调用的函数。先计算上一次调用的时间，如果该时间没有超过wait就再延缓执行函数。否则就可以执行func了。
+在return的函数中，首先看是否需要立即执行一次函数（是否有immediate参数），有的话就立即调用一次func。然后设置调用later函数。
 
- 在return的函数中，首先看是否需要立即执行一次函数（是否有immediate参数），有的话就立即调用一次func。然后设置调用later函数。
+---
+
+```
+ _.wrap = function(func, wrapper) {
+    return _.partial(wrapper, func);
+  };
+```
+非常有用的一个函数，可以func包装在wrapper函数内部，作为wrapper的第一个参数。wrapper在func先执行，在backbone中常用在渲染DOM时的前置工作，或是提交表单前的检验。
+
+实现还是比较巧妙的，利用了前面的partial函数，将func作为固定参数绑定到wrapper上，然后再接收其他参数。
+
+---
+
+```
+ _.negate = function(predicate) {
+    return function() {
+      return !predicate.apply(this, arguments);
+    };
+  };
+```
+
+与逻辑非的作用类似，将一个断言函数的结果取反。
+
+---
+```
+ _.compose = function() {
+    var args = arguments;
+    var start = args.length - 1;
+    return function() {
+      var i = start;
+      var result = args[start].apply(this, arguments);
+      while (i--) result = args[i].call(this, result);
+      return result;
+    };
+  };
+```
+
+functional programming常用到的防范，将几个函数组合成一个新的函数。函数式编程的详情请参考相关资料。这里的实现是将一系列函数作为compose的参数传入，然后从后往前调用函数，每次函数调用都使用上一次调用的结果。
+
+于是第一次调用的是最后一个函数：
+var result = args[start].apply(this, arguments);
+
+然后将result作为参数传递给前面一个函数，依次循环：
+while (i--) result = args[i].call(this, result);
+
+我个人一般不使用这个函数，因为直接写compose也是非常清晰的，而且结构上更优美一些。
+
+---
+```
+ _.after = function(times, func) {
+    return function() {
+      if (--times < 1) {
+        return func.apply(this, arguments);
+      }
+    };
+  };
+```
+在times次之后，执行func。可精确控制func执行的条件。实现也挺简单，每次调用after返回的函数就--times先减后比较，如果减后次数为0，则执行func。
+
+---
+```
+ _.before = function(times, func) {
+    var memo;
+    return function() {
+      if (--times > 0) {
+        memo = func.apply(this, arguments);
+      }
+      if (times <= 1) func = null;
+      return memo;
+    };
+  };
+```
+只能执行不小于times次func。用来精确控制func的执行次数。跟前面刚好相反，--之后如果次数大于0，则执行func，否则就将func置为null。超过次数之后只返回最后一次调用的结果，也就是memo的值了。
+
+---
+```
+_.once = _.partial(_.before, 2);
+```
+
+限制函数只能执行一次，一般用于初始化函数（只初始化一次）。这里就是套用了before，2表示最多不能多过1次。partial用于绑定before返回的函数的this。
+
+---
