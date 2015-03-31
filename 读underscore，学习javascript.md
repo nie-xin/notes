@@ -1613,3 +1613,80 @@ _.once = _.partial(_.before, 2);
 限制函数只能执行一次，一般用于初始化函数（只初始化一次）。这里就是套用了before，2表示最多不能多过1次。partial用于绑定before返回的函数的this。
 
 ---
+到这里，与function相关的函数就读完了。真得敲自己一下，这么久才读了一半左右，懒骨头啊懒骨头。速度开始和对象有关的方法吧。
+
+##Object functions
+
+首先开场的就是IE的BUG相关代码，为啥大家都讨厌IE你现在知道了吧？
+
+```
+  var hasEnumBug = !{toString: null}.propertyIsEnumerable('toString');
+```
+
+先看propertyIsEnumerable，这个不常见的方法主要用于判断对象的属性是否可以枚举，也就是在for...in的时候会不会显示。于是hasEnumBug就是判断是否有for..in的问题（IE9以下的属性不会在for in时枚举，正常的情况下toString是会枚举的）。
+
+然后手动定义了一个在对象上不需要枚举的属性（一般是在其prototype上的那些属性）：
+var nonEnumerableProps = ['valueOf', 'isPrototypeOf', 'toString', 'propertyIsEnumerable', 'hasOwnProperty', 'toLocaleString'];
+
+```
+ function collectNonEnumProps(obj, keys) {
+    var nonEnumIdx = nonEnumerableProps.length;
+    var constructor = obj.constructor;
+    var proto = (_.isFunction(constructor) && constructor.prototype) || ObjProto;
+
+    var prop = 'constructor';
+    if (_.has(obj, prop) && !_.contains(keys, prop)) keys.push(prop);
+
+    while (nonEnumIdx--) {
+      prop = nonEnumerableProps[nonEnumIdx];
+      if (prop in obj && obj[prop] !== proto[prop] && !_.contains(keys, prop)) {
+        keys.push(prop);
+      }
+    }
+  }
+```
+这个函数用来收集所有不枚举的属性。先找出prototype：
+var proto = (_.isFunction(constructor) && constructor.prototype) || ObjProto;
+
+然后遍历不需要枚举的数组，找出那些还没有包含在keys中的那部分：
+      prop = nonEnumerableProps[nonEnumIdx];
+      if (prop in obj && obj[prop] !== proto[prop] && !_.contains(keys, prop)) {
+        keys.push(prop);
+      }
+这里比较疑惑的是obj[prop] !== proto[prop]，主要作用是确认obj的和其proto上的同名属性指向的不是同一个属性。
+
+---
+
+下面正式开始了！
+
+```
+ _.keys = function(obj) {
+    if (!_.isObject(obj)) return [];
+    if (nativeKeys) return nativeKeys(obj);
+    var keys = [];
+    for (var key in obj) if (_.has(obj, key)) keys.push(key);
+
+    if (hasEnumBug) collectNonEnumProps(obj, keys);
+    return keys;
+  };
+```
+与Object.keys相似，这里的nativeKeys = Object.keys:= Object.keys，返回own keys。于是如果本身有原生方法就调用原生方法。
+
+如果没有原生方法，就用for in收集keys。但前面说过IE9以下无效，所以最后看是否有这个问题，有的话就调用前面定义的特殊方法。
+
+---
+
+```
+  _.allKeys = function(obj) {
+    if (!_.isObject(obj)) return [];
+    var keys = [];
+    for (var key in obj) keys.push(key);
+
+
+    if (hasEnumBug) collectNonEnumProps(obj, keys);
+    return keys;
+  };
+```
+取对象所有的key，包括其prototype上的key。这里统一使用for in就行。然后对IE9以下的还是上面的老方法。
+
+---
