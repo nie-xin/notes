@@ -1,0 +1,20 @@
+Instance variable to be pointer to other objects:
+- object-type attribute: a pointer to simple object linke NSString
+- to-one relationships: a pointer to a single complex object
+- to-many relationships: a ponter to an instance of a collection class
+
+Object ownership
+- an object has an object instance
+- the object with the pointer own the object that is being pointed to
+- when an object has 0 owner, it will be deallocated
+
+NSObject - dealloc
+- will be executed when instance deallocated
+
+To build program (not to run): Command-B
+- testing code with syntax check
+
+Collections & ownership:
+- when an object adds to collection, the collection established a pointer to the object, so the object has an owner
+- when an object is removed from the collection, the collection gets rid of its pointer to this object, and this object loses an owner
+
