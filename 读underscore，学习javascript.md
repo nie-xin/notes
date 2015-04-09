@@ -1690,3 +1690,74 @@ var proto = (_.isFunction(constructor) && constructor.prototype) || ObjProto;
 取对象所有的key，包括其prototype上的key。这里统一使用for in就行。然后对IE9以下的还是上面的老方法。
 
 ---
+
+```
+  _.values = function(obj) {
+    var keys = _.keys(obj);
+    var length = keys.length;
+    var values = Array(length);
+    for (var i = 0; i < length; i++) {
+      values[i] = obj[keys[i]];
+    }
+    return values;
+  };
+```
+与keys相反，取出一个对象所有的值。首先还是取出keys，然后依次遍历对象的成员，并依次取出对应的值。
+
+---
+
+```
+  _.mapObject = function(obj, iteratee, context) {
+    iteratee = cb(iteratee, context);
+    var keys =  _.keys(obj),
+          length = keys.length,
+          results = {},
+          currentKey;
+      for (var index = 0; index < length; index++) {
+        currentKey = keys[index];
+        results[currentKey] = iteratee(obj[currentKey], currentKey, obj);
+      }
+      return results;
+  };
+```
+
+和用于数组的map类似，这里是对对象的每个成员调用iteratee函数，然后返回调用后的对象。
+
+先用cb绑定iteratee和context。然后和上面的套路类似，依次遍历对象成员，对每个成员的值调用iteratee。
+
+注意最后得出的结果依然保存在新对象的同key位置。
+
+---
+
+```
+_.pairs = function(obj) {
+    var keys = _.keys(obj);
+    var length = keys.length;
+    var pairs = Array(length);
+    for (var i = 0; i < length; i++) {
+      pairs[i] = [keys[i], obj[keys[i]]];
+    }
+    return pairs;
+  };
+```
+
+将一个对象转换为[key, value]的嵌套数组。总体框架还是类似的，还是依次遍历对象成员，依次取出key和value，然后按格式存入数组。
+
+这里有个有趣的方法var pairs = Array(length)，这里创建了一个长度为length的空数组。这时如果console.log该数组会显示是一个简单的空数组（FF会附加显示可用的空位数），但如果查看pairs.length则会显示数组长度是2，再查看具体内容pairs[0], pairs[1]则会显示是underfined。
+
+---
+
+```
+_.invert = function(obj) {
+    var result = {};
+    var keys = _.keys(obj);
+    for (var i = 0, length = keys.length; i < length; i++) {
+      result[obj[keys[i]]] = keys[i];
+    }
+    return result;
+  };
+```
+
+置换对象的key和value。类似的框架，遍历时key变value，value变key就行，很容易看懂。
+
+---
